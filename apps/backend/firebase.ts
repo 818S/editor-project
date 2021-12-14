@@ -8,4 +8,4 @@ admin.initializeApp({
   databaseURL: "https://databaseName.firebaseio.com"
 })
 
-export default admin.database()
+export default admin.firestore()
