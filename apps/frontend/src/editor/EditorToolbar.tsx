@@ -3,6 +3,7 @@ import { useSlate } from 'slate-react'
 import { toggleBlock, toggleMark, isBlockActive, isMarkActive } from './helpers'
 import { CustomElementType } from './CustomElement'
 import { CustomText } from './CustomLeaf'
+import { Icon } from '@mui/material'
 
 interface ButtonProps {
   active: boolean
@@ -13,9 +14,9 @@ const Button: React.FC<ButtonProps> = ({ active, children, onMouseDown }) => (
   <button onMouseDown={onMouseDown} style={{ backgroundColor: active ? '#333' : 'white', color: active ? 'white' : '#333', border: '1px solid #eee' }}>{children}</button>
 )
 
-const Icon: React.FC = ({ children }) => (
-  <span>{children}</span>
-)
+// const Icon: React.FC = ({ children }) => (
+//   <span>{children}</span>
+// )
 
 interface BlockButtonProps {
   format: CustomElementType
@@ -61,15 +62,16 @@ const MarkButton: React.FC<MarkButtonProps> = ({ format, icon }) => {
 export const EditorToolbar: React.FC = () => {
   return (
     <div>
-      <MarkButton format="bold" icon="bold" />
-      <MarkButton format="italic" icon="italic" />
-      <MarkButton format="underline" icon="underlined" />
+      <MarkButton format="bold" icon="format_bold" />
+      <MarkButton format="italic" icon="format_italic" />
+      <MarkButton format="underline" icon="format_underlined" />
       <MarkButton format="code" icon="code" />
-      <BlockButton format={CustomElementType.headingOne} icon="h1" />
-      <BlockButton format={CustomElementType.headingTwo} icon="h2" />
-      <BlockButton format={CustomElementType.blockQuote} icon="quote" />
-      <BlockButton format={CustomElementType.numberedList} icon="list_numbered" />
-      <BlockButton format={CustomElementType.bulletedList} icon="list_bulleted" />
+      <BlockButton format={CustomElementType.headingOne} icon="looks_one" />
+      <BlockButton format={CustomElementType.headingTwo} icon="looks_two" />
+      <BlockButton format={CustomElementType.blockQuote} icon="format_quote" />
+      <BlockButton format={CustomElementType.numberedList} icon="format_list_numbered" />
+      <BlockButton format={CustomElementType.bulletedList} icon="format_list_bulleted" />
+      <BlockButton format={CustomElementType.link} icon="insert_link" />
     </div>
   )
 }

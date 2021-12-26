@@ -2,6 +2,7 @@ import express, { RequestHandler, Response } from 'express'
 import { WebsocketRequestHandler } from 'express-ws'
 import { Descendant } from 'slate'
 import { NOTE_1, NOTE_2 } from '../fixtures/notes'
+import { getNote, getNotes, INote, updateNote } from '../services/notes'
 
 // Patch `express.Router` to support `.ws()` without needing to pass around a `ws`-ified app.
 // https://github.com/HenningM/express-ws/issues/86
@@ -18,36 +19,28 @@ export interface NotesResponse {
   }>
 }
 
-export interface NoteResponse {
-  id: string
-  title: string
-  content: Array<Descendant>
-}
+export type NoteResponse = INote
 
-const notesHandler: RequestHandler = (_req, res: Response<NotesResponse>) => {
+const notesHandler: RequestHandler = async (_req, res: Response<NotesResponse>) => {
+  const notes = await getNotes()
   res.json({
-    notes: [
-      {
-        id: NOTE_1.id,
-        title: NOTE_1.title
-      }, {
-        id: NOTE_2.id,
-        title: NOTE_2.title
-      }
-    ]
-  })
+    notes,
+  } as NotesResponse)
 }
 
 const noteHandler: WebsocketRequestHandler = (ws, req) => {
-  ws.on('message', () => {
-    switch (req.params.id) {
-      case NOTE_1.id: {
-        return ws.send(JSON.stringify(NOTE_1))
-      }
-      case NOTE_2.id: {
-        return ws.send(JSON.stringify(NOTE_2))
-      }
+  ws.on('message', async (msg: string) => {
+    const noteId = req.params.id
+    let note = {}
+    console.log('Got message', noteId, msg)
+    if (!msg) {
+      note = await getNote(noteId)
+      console.log('Got note', note)
+    } else {
+      note = await updateNote(noteId, JSON.parse(msg) as INote)
+      console.log('Updated note', note)
     }
+    ws.send(JSON.stringify(note))
   })
 }
 
